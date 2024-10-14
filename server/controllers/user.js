@@ -88,3 +88,16 @@ module.exports.getProfile = (req, res) => {
 	});
 
 }
+
+module.exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select('-password');
+        if (!users) {
+            return res.status(404).send({ error: 'No users found' });
+        }
+        return res.status(200).send({ users });
+    } catch (err) {
+        console.error("Error in fetching all users", err)
+        return res.status(500).send({ error: 'Failed to fetch all users' })
+    }
+}

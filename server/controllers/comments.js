@@ -7,7 +7,7 @@ module.exports.addComment = async (req, res) => {
         const post = await Blog.findById(req.params._id || req.params.id);
 
         if (!post) {
-            return res.status(404).send({ error: "Movie not found" });
+            return res.status(404).send({ error: "Post not found" });
         }
 
         const newComment = new Comment({
@@ -29,8 +29,7 @@ module.exports.addComment = async (req, res) => {
             model: 'Comment'
         });
 
-        return res.status(201).send({ message: "Comment added successfully", updatedPost: populatedPost });
-
+        res.status(201).send({ message: "Comment added successfully", updatedPost: populatedPost });
     } catch (err) {
         errorHandler(err, req, res)
     }
@@ -38,19 +37,17 @@ module.exports.addComment = async (req, res) => {
 
 module.exports.getAllComment = async (req, res) => {
     try {
-
-        const result = await Comment.find({});
-
-        if(result.length > 0) {
-            return res.status(200).send(result);
-        } else {
-            return res.status(404).send({ message: "No comment found" })
-        }
-
-    } catch(err) {
-        errorHandler(err, req, res)
+      const result = await Comment.find({}).populate('userId', 'username');
+  
+      if (result.length > 0) {
+        return res.status(200).send(result);
+      } else {
+        return res.status(404).send({ message: "No comment found" });
+      }
+    } catch (err) {
+      errorHandler(err, req, res);
     }
-}
+  };
 
 module.exports.getComment = async (req, res) => {
     try {
