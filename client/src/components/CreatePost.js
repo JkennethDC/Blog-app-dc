@@ -16,7 +16,7 @@ export default function Post({ showModal, handleClose, onPostCreated }) {
         y: 'right'
     });
 
-    const [ user ] = useContext(UserContext);
+    const user = useContext(UserContext);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -41,16 +41,21 @@ export default function Post({ showModal, handleClose, onPostCreated }) {
     const createPost = async () => {
         await fetchUserDetails();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/blogs/post`, newPost, {
+            const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/blogs/post`, {
+                title: newPost.title,
+                content: newPost.content,
+                author: user.id
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            notyf.success('Post created successfully!');
-            onPostCreated(); 
+            const createdPost = response.data; 
+            onPostCreated(createdPost);
             handleClose(); 
             setNewPost({ title: '', content: '', author: '' }); 
+            notyf.success("Post Created")
         } catch (error) {
             notyf.error('Failed to create post');
             console.error('Error creating post:', error);
@@ -58,7 +63,6 @@ export default function Post({ showModal, handleClose, onPostCreated }) {
     };
 
     const handleCreatePost = async () => {
-        await fetchUserDetails();
         await createPost();
     };
 

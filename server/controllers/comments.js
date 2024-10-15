@@ -117,3 +117,20 @@ module.exports.deleteComment = async (req, res) => {
         errorHandler(err, req, res)
     }
 };
+
+module.exports.getCommentsByPost = async (req, res) => {
+    try {
+        const postId = req.params.postId; // Assuming postId is passed in the URL
+
+        // Find all comments related to this post
+        const comments = await Comment.find({ blog: postId }).populate('userId', 'username');
+
+        if (comments.length === 0) {
+            return res.status(404).send({ message: "No comments found for this post" });
+        }
+
+        return res.status(200).send(comments);
+    } catch (err) {
+        errorHandler(err, req, res);
+    }
+};

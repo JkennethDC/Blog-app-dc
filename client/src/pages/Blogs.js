@@ -29,8 +29,8 @@ export default function Blog() {
     const handleShowPostModal = () => setShowPostModal(true);
     const handleClosePostModal = () => setShowPostModal(false);
 
-    const handlePostCreated = () => {
-        fetchPosts();
+    const handlePostCreated = (newPost) => {
+        setPosts((prevPosts) => [...prevPosts, newPost]);
         handleClosePostModal(); 
     };
 
@@ -75,7 +75,7 @@ export default function Blog() {
                 query && <p>No post found for the title "{query}"</p>
             )}
 
-            <BlogList posts={posts} isAdmin={user.isAdmin} />
+            <BlogList key={posts.length} posts={posts} isAdmin={user.isAdmin} />
         </div>
     );
 }

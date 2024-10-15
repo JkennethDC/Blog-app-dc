@@ -35,37 +35,13 @@ export default function BlogList({ posts, isAdmin }) {
             setError('Failed to fetch posts');
         }
     };
-
-    const fetchComments = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/blogs/getComments`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            const commentsData = response.data;
-            const commentsObj = commentsData.reduce((acc, comment) => {
-                if (!acc[comment.blog]) {
-                    acc[comment.blog] = [];
-                }
-                acc[comment.blog].push({
-                    username: comment.userId.username,
-                    comment: comment.content
-                });
-                return acc;
-            }, {});
-            setComments(commentsObj);
-        } catch (error) {
-            console.error('Error fetching comments:', error);
-            setError('Failed to fetch comments');
-        }
-    };
-
+    
     const handleShowModal = (post) => {
         setSelectedPost(post);
         setUpdatedPost({ title: post.title, content: post.content });
         setShowModal(true);
     };
+    
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -110,7 +86,6 @@ export default function BlogList({ posts, isAdmin }) {
                 }
             );
             notyf.success("Post Deleted")
-            console.log('Delete response:', response.data);
             fetchPosts(); 
         } catch (error) {
             console.error('Error deleting post:', error);
@@ -134,13 +109,14 @@ export default function BlogList({ posts, isAdmin }) {
                 },
             });
     
-            console.log('Comment added:', response.data);
-            fetchComments(); 
+            console.log('Comment added:', response.data); 
             document.getElementsByName('comment')[0].value = ''; 
+            fetchPosts();
         } catch (error) {
             console.error('Error adding comment:', error);
         }
     };
+    
 
     return (
         <Container fluid className="d-flex justify-content-center" style={{ minHeight: '100vh', backgroundImage: 'url()', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
@@ -159,12 +135,18 @@ export default function BlogList({ posts, isAdmin }) {
                                             <p className="card-text">By: {post.author.username}</p>
                                             <p className="card-text">Created At: {new Date(post.createdAt).toLocaleString()}</p>
                                             <h3 className="card-text">{post.content}</h3>
+                                            <h5 className="card-text"> Comments: </h5>
+                                            {post.comments.map((comment) => (
+                                                <p key={comment._id} className="card-text">
+                                                {comment.userId.username}: {comment.comments} 
+                                                </p>
+                                            ))}
                                             <Button variant="primary" onClick={() => handleShowModal(post)}>
-                                                View Comments
+                                                Comment
                                             </Button>
                                             {!isAdmin && (
                                                 <>
-                                                    <Button variant="secondary" onClick={() => {
+                                                    <Button className='mx-2' variant="secondary" onClick={() => {
                                                         handleShowModal(post);
                                                         setIsEditing(true);
                                                     }}>
@@ -187,60 +169,48 @@ export default function BlogList({ posts, isAdmin }) {
                 <Modal.Header closeButton>
                     <Modal.Title>{isEditing ? 'Edit Post' : 'Comments for ' + (selectedPost ? selectedPost.title : '')}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    {isEditing ? (
-                        <Form>
-                            <Form.Group controlId="title">
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="title"
-                                    value={updatedPost.title}
-                                    onChange={handleEditChange}
-                                    placeholder="Enter title"
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="content">
-                                <Form.Label>Content</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    name="content"
-                                    value={updatedPost.content}
-                                    onChange={handleEditChange}
-                                    placeholder="Enter content"
-                                />
-                            </Form.Group>
-                        </Form>
-                    ) : (
-                        <div>
-                            <ul>
-                                {selectedPost && comments[selectedPost._id] ? (
-                                    comments[selectedPost._id].map((comment, index) => (
-                                        <li key={index}>
-                                            <p>{comment.username || 'Unknown'}</p>
-                                            <p>{comment.comment}</p>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p>No comments available.</p>
-                                )}
-                            </ul>
+                    <Modal.Body>
+                        {isEditing ? (
                             <Form>
-                                <Form.Group controlId="comment">
-                                    <Form.Label>Add a comment</Form.Label>
+                                <Form.Group controlId="title">
+                                    <Form.Label>Title</Form.Label>
                                     <Form.Control
-                                        as="textarea"
-                                        name="comment"
-                                        placeholder="Enter your comment"
+                                        type="text"
+                                        name="title"
+                                        value={updatedPost.title}
+                                        onChange={handleEditChange}
+                                        placeholder="Enter title"
                                     />
                                 </Form.Group>
-                                <Button variant="primary" onClick={handleAddComment}>
-                                    Add Comment
-                                </Button>
+                                <Form.Group controlId="content">
+                                    <Form.Label>Content</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        name="content"
+                                        value={updatedPost.content}
+                                        onChange={handleEditChange}
+                                        placeholder="Enter content"
+                                    />
+                                </Form.Group>
                             </Form>
-                        </div>
-                    )}
-                </Modal.Body>
+                        ) : (
+                            <div>
+                                <Form>
+                                    <Form.Group controlId="comment">
+                                        <Form.Label>Add a comment</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            name="comment"
+                                            placeholder="Enter your comment"
+                                        />
+                                    </Form.Group>
+                                    <Button className="my-3" variant="primary" onClick={handleAddComment}>
+                                        Send
+                                    </Button>
+                                </Form>
+                            </div>
+                        )}
+                    </Modal.Body>
                 <Modal.Footer>
                     {isEditing ? (
                         <>

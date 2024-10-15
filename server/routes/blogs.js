@@ -17,6 +17,7 @@ router.delete('/deletePost/:id', verify, blogController.deletePost);
 router.patch('/addComment/:id', verify, commentController.addComment);
 router.get('/getComments', verify, commentController.getAllComment);
 router.get('/getComment/:id', verify, commentController.getComment);
+router.get('/getCommentsByPost/:id', verify,  commentController.getCommentsByPost);
 router.patch('/updateComment/:id', verify, commentController.updateComment);
 router.delete('/deleteComment/:id', verify, commentController.deleteComment);
 
