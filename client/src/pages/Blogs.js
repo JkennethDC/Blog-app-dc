@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Button, Form, Card } from 'react-bootstrap';
+import { Button, Form, Card, Container, Row } from 'react-bootstrap';
 import axios from 'axios';
 import UserContext from '../context/UserContext';
 
@@ -41,9 +41,8 @@ export default function Blog() {
 
     return (
         <div>
-            <h1>Blog</h1>
             {user.id !== null && user.isAdmin !== true && (
-                <Button variant="primary" className='m-5' onClick={handleShowPostModal}>
+                <Button variant="success" className='m-5' onClick={handleShowPostModal}>
                     Create New Post
                 </Button>
             )}
@@ -51,7 +50,9 @@ export default function Blog() {
             {showPostModal && (
                 <Post showModal={showPostModal} handleClose={handleClosePostModal} onPostCreated={handlePostCreated} />
             )}
-
+        <Container>
+            <Row>
+                <Card className="p-5 m-3 shadow-lg bg-dark">
             <Form inline className="mb-3">
                 <Form.Control
                     type="text"
@@ -60,7 +61,7 @@ export default function Blog() {
                     onChange={(e) => setQuery(e.target.value)}
                     className="mr-sm-2"
                 />
-                <Button onClick={handleSearch} variant="primary" className="my-3">Search</Button>
+                <Button onClick={handleSearch} variant="info" className="my-3">Search</Button>
             </Form>
 
             {filteredPost ? (
@@ -73,7 +74,11 @@ export default function Blog() {
                 </Card>
             ) : (
                 query && <p>No post found for the title "{query}"</p>
+                
             )}
+                </Card>
+            </Row>
+        </Container>
 
             <BlogList key={posts.length} posts={posts} isAdmin={user.isAdmin} />
         </div>

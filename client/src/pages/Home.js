@@ -34,6 +34,7 @@ export default function Home() {
                 }}
                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ff7e5f'}
                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#feb47b'} 
+                onClick={() => window.location.href = '/blogs'}
             >
                 Explore Blogs
             </button>

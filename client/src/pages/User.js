@@ -55,7 +55,7 @@ export default function User(){
         ) : (
             <section className="" style={{ backgroundColor: '#f4f5f7' }}>
             <MDBContainer className="py-5 h-100"> 
-                <h1 className='text-center m-5'>All User's information</h1>
+                <h1 className='text-center m-5'>User's information</h1>
                 <MDBRow className="justify-content-center align-items-center h-100">
                 {(user.isAdmin === true) ? (
                     <MDBCol lg="12" className="mb-4 mb-lg-0">

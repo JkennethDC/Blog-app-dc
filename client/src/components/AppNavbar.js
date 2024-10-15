@@ -29,10 +29,10 @@ export default function AppNavbar() {
         {(user.isAdmin === true) ? 
             <Navbar expand="lg" bg="primary" variant="light" sticky="top">
             <Container fluid={true}>
-            <Navbar.Brand className="ms-5"><MdAdminPanelSettings size={40} color="white"/></Navbar.Brand>
+            <Navbar.Brand className="text-white"><MdAdminPanelSettings size={40} color="white"/> DASHBOARD</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="m-auto">
+                <Nav className="mx-auto">
                     <Nav.Link as={NavLink} to="/blogs"><FaBloggerB size={30} color="white"/></Nav.Link>
                     <Nav.Link as={NavLink} to="/user"><FaUser size={25} color="white" /></Nav.Link>
                     <Nav.Link as={NavLink} to="/logout"><IoLogOut size={30} color="white"/></Nav.Link>
@@ -48,7 +48,7 @@ export default function AppNavbar() {
             <Navbar.Brand as={NavLink} to="/" className="ms-5">J-Blog</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
+            <Nav className="ms-auto pe-5">
                 {(user.id !== null) ? 
                     <>
                     <Nav.Link as={NavLink} to="/blogs"><FaBloggerB size={30} color="white" /></Nav.Link>
@@ -61,17 +61,6 @@ export default function AppNavbar() {
                     </>
                 }
             </Nav>
-            <Form className="d-flex ms-5" onSubmit={handleSearch}>
-            <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Button variant="outline-light" type="submit" ><FaSearch size={20} /></Button>
-            </Form>
             </Navbar.Collapse>
         </Container>
         </Navbar>
